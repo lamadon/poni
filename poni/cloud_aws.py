@@ -440,7 +440,9 @@ class AwsProvider(cloudbase.Provider):
     def _run_instance(self, launch_kwargs, instance_types):
         """Launch a new instance and record it in the internal cache"""
         conn = self._get_conn()
+        self.log.info("instance_types before run_instance %s", instance_types)
         for preferred_type in instance_types:
+            self.log.info("preferred type %s", preferred_type)
             try:
                 reservation = conn.run_instances(instance_type=preferred_type, **launch_kwargs)
             except boto.exception.BotoServerError as error:
@@ -514,6 +516,7 @@ class AwsProvider(cloudbase.Provider):
         if instance_type and isinstance(instance_type, basestring):
             instance_types = [instance_type]
 
+        self.log.info("instance_types in main %s", instance_types)
         launch_kwargs = dict(
             image_id=image_id,
             key_name=key_name,
